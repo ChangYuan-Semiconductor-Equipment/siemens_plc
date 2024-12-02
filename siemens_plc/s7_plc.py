@@ -75,8 +75,7 @@ class S7PLC:
             read_func = getattr(self, f"read_{data_type}_data")
             if data_type == "bool":
                 return read_func(db_num, start, size, bool_index, save_log)
-            else:
-                return read_func(db_num, start, size, save_log)
+            return read_func(db_num, start, size, save_log)
 
     def read_int_data(self, db_number: int, start: int, size: int = 2, save_log: bool = True) -> int:
         """Read integer data from the PLC.
@@ -147,7 +146,9 @@ class S7PLC:
             self.logger.info("PLC: Read lreal data: %s", value)
         return value
 
-    def read_bool_data(self, db_number: int, start: int, size: int = 1, bool_index: int = 0, save_log: bool = True) -> bool:
+    def read_bool_data(
+            self, db_number: int, start: int, size: int = 1, bool_index: int = 0, save_log: bool = True
+    ) -> bool:
         """Read bool data from the PLC.
 
         Args:
@@ -195,7 +196,9 @@ class S7PLC:
             self.logger.info("PLC: Read string data: %s", value)
         return value
 
-    def execute_write(self, data_type, db_num: int, start: int, data: Union[str, bool, int, float], bool_index: int = 0) -> int:
+    def execute_write(
+            self, data_type, db_num: int, start: int, data: Union[str, bool, int, float], bool_index: int = 0
+    ) -> int:
         """写入plc数据的通用方法.
 
         Args:
@@ -210,7 +213,9 @@ class S7PLC:
         """
         with self.plc_lock:
             write_func = getattr(self, f"write_{data_type}_data")
-            return write_func(db_num, start, data, bool_index) if data_type == "bool" else write_func(db_num, start, data)
+            if data_type == "bool":
+                return write_func(db_num, start, data, bool_index)
+            return write_func(db_num, start, data)
 
     def write_int_data(self, db_number: int, start: int, data: int):
         """Write integer data to the PLC.
