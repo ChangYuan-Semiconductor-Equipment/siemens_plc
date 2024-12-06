@@ -253,7 +253,7 @@ class S7PLC:
         """
         try:
             real_data_bytearray = bytearray(self._s7_client.db_read(db_number, start, 4))
-            util.set_real(real_data_bytearray, 0, data)
+            real_data_bytearray = util.set_real(real_data_bytearray, 0, data)
             return self._s7_client.db_write(db_number, start, real_data_bytearray)
         except RuntimeError as e:
             raise PLCWriteError("PLC: Write real data error") from e
@@ -274,7 +274,7 @@ class S7PLC:
         """
         try:
             lreal_data_bytearray = bytearray(self._s7_client.db_read(db_number, start, 8))
-            util.set_real(lreal_data_bytearray, 0, data)
+            lreal_data_bytearray = util.set_real(lreal_data_bytearray, 0, data)
             return self._s7_client.db_write(db_number, start, lreal_data_bytearray)
         except RuntimeError as e:
             raise PLCWriteError("PLC: Write lreal data error") from e
@@ -295,9 +295,9 @@ class S7PLC:
             PLCWriteError: If writing bool type data fails.
         """
         try:
-            int_data_bytearray = bytearray(self._s7_client.db_read(db_number, start, 1))
-            util.set_bool(int_data_bytearray, 0, bool_index, data)
-            return self._s7_client.db_write(db_number, start, int_data_bytearray)
+            bool_data_bytearray = bytearray(self._s7_client.db_read(db_number, start, 1))
+            bool_data_bytearray = util.set_bool(bool_data_bytearray, 0, bool_index, data)
+            return self._s7_client.db_write(db_number, start, bool_data_bytearray)
         except RuntimeError as e:
             raise PLCWriteError("PLC: Write bool data error") from e
 
