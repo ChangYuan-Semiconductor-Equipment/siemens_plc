@@ -232,8 +232,9 @@ class S7PLC:
             PLCWriteError: If writing integer type data fails.
         """
         try:
-            int_data = bytearray(int.to_bytes(int(data), 2, "big"))
-            return self._s7_client.db_write(db_number, start, int_data)
+            int_data_bytearray = bytearray(self._s7_client.db_read(db_number, start, 2))
+            int_data_bytearray = util.set_int(int_data_bytearray, 0, data)
+            return self._s7_client.db_write(db_number, start, int_data_bytearray)
         except RuntimeError as e:
             raise PLCWriteError("PLC: Write integer data error") from e
 
@@ -274,7 +275,7 @@ class S7PLC:
         """
         try:
             lreal_data_bytearray = bytearray(self._s7_client.db_read(db_number, start, 8))
-            lreal_data_bytearray = util.set_real(lreal_data_bytearray, 0, data)
+            lreal_data_bytearray = util.set_lreal(lreal_data_bytearray, 0, data)
             return self._s7_client.db_write(db_number, start, lreal_data_bytearray)
         except RuntimeError as e:
             raise PLCWriteError("PLC: Write lreal data error") from e
