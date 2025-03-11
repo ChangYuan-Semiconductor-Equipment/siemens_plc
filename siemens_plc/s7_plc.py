@@ -7,7 +7,7 @@ from threading import Lock
 import snap7
 from snap7 import util
 
-from siemens_plc.exception import PLCReadError, PLCWriteError, PLCConnectError
+from siemens_plc.exception import PLCReadError, PLCWriteError
 
 
 # pylint: disable=too-many-arguments, too-many-positional-arguments
