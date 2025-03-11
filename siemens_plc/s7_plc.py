@@ -34,9 +34,11 @@ class S7PLC:
             try:
                 self._s7_client.connect(self.ip, self.rack, self.slot)
                 self.logger.info("PLC: Connected successfully")
+                return True
             except RuntimeError as e:
                 self.logger.error("PLC: Connection error: %s", e)
-                raise PLCConnectError("PLC: Connection error") from e
+                return False
+        return True
 
     def disconnect(self) -> None:
         """Disconnect from the PLC."""
