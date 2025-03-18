@@ -58,16 +58,16 @@ class S7PLC:
         return False
 
     def execute_read(
-            self, data_type: str, db_num: int, start: int, size: int, bool_index: int = 0, save_log: bool = True
+            self, data_type: str, address: int, db_num: int, size: int, bit_index: int = 0, save_log: bool = True
     ) -> Union[str, bool, int]:
         """读取plc数据的通用方法.
 
         Args:
             data_type (str): 读取数据的类型.
             db_num (int): db num.
-            start (int): 开始地址位.
+            address (int): 开始地址位.
             size (int): 地址位长度.
-            bool_index (int): bool类型对应的bool index, 默认为0.
+            bit_index (int): bool类型对应的bool index, 默认为0.
             save_log: 是否保存日志, 默认保存.
 
         Returns:
@@ -76,8 +76,8 @@ class S7PLC:
         with self.plc_lock:
             read_func = getattr(self, f"read_{data_type}_data")
             if data_type == "bool":
-                return read_func(db_num, start, size, bool_index, save_log)
-            return read_func(db_num, start, size, save_log)
+                return read_func(db_num, address, size, bit_index, save_log)
+            return read_func(db_num, address, size, save_log)
 
     def read_int_data(self, db_number: int, start: int, size: int = 2, save_log: bool = True) -> int:
         """Read integer data from the PLC.
