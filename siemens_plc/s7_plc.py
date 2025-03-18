@@ -199,16 +199,16 @@ class S7PLC:
         return value
 
     def execute_write(
-            self, data_type, db_num: int, start: int, data: Union[str, bool, int, float], bool_index: int = 0
+            self, data_type, address: int, db_num: int, data: Union[str, bool, int, float], bit_index: int = 0
     ) -> int:
         """写入plc数据的通用方法.
 
         Args:
             data_type (str): 读取数据的类型.
             db_num (int): db num.
-            start (int): 开始地址位.
+            address (int): 开始地址位.
             data (Union[str, bool, int]): 要写入的数据.
-            bool_index (int): bool类型对应的bool index.
+            bit_index (int): bool类型对应的bool index.
 
         Returns:
             int: 写入后的code.
@@ -216,8 +216,8 @@ class S7PLC:
         with self.plc_lock:
             write_func = getattr(self, f"write_{data_type}_data")
             if data_type == "bool":
-                return write_func(db_num, start, data, bool_index)
-            return write_func(db_num, start, data)
+                return write_func(db_num, address, data, bit_index)
+            return write_func(db_num, address, data)
 
     def write_int_data(self, db_number: int, start: int, data: int):
         """Write integer data to the PLC.
