@@ -199,7 +199,7 @@ class S7PLC:
         return value
 
     def execute_write(
-            self, data_type, address: int, db_num: int, data: Union[str, bool, int, float], bit_index: int = 0
+            self, data_type, address: int, db_num: int, data: Union[str, bool, int, float], bit_index: int = 0, size=None
     ) -> int:
         """写入plc数据的通用方法.
 
@@ -209,6 +209,7 @@ class S7PLC:
             address (int): 开始地址位.
             data (Union[str, bool, int]): 要写入的数据.
             bit_index (int): bool类型对应的bool index.
+            size: 写入数据的长度.
 
         Returns:
             int: 写入后的code.
@@ -217,6 +218,8 @@ class S7PLC:
             write_func = getattr(self, f"write_{data_type}_data")
             if data_type == "bool":
                 return write_func(db_num, address, data, bit_index)
+            if data_type == "str":
+                return write_func(db_num, address, data, size)
             return write_func(db_num, address, data)
 
     def write_int_data(self, db_number: int, start: int, data: int):
@@ -304,13 +307,14 @@ class S7PLC:
         except RuntimeError as e:
             raise PLCWriteError("PLC: Write bool data error") from e
 
-    def write_str_data(self, db_number: int, start: int, data: str):
+    def write_str_data(self, db_number: int, start: int, data: str, size: int):
         """Write string data to the PLC.
 
         Args:
-            db_number (int): Number of the DB to be written.
-            start (int): Byte index to start writing to.
-            data (str): The value to be written.
+            db_number: Number of the DB to be written.
+            start: Byte index to start writing to.
+            data: The value to be written.
+            size: 写入字符串长度.
 
         Returns:
             int: Status of the write string data operation.
@@ -320,7 +324,7 @@ class S7PLC:
         """
         try:
             str_data = bytearray(
-                int.to_bytes(254, 1, "big") +
+                int.to_bytes(size, 1, "big") +
                 int.to_bytes(len(data), 1, "big") +
                 data.encode(encoding="ascii")
             )
