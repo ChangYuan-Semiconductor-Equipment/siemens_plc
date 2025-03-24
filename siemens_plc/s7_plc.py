@@ -199,7 +199,8 @@ class S7PLC:
         return value
 
     def execute_write(
-            self, data_type, address: int, db_num: int, data: Union[str, bool, int, float], bit_index: int = 0, size=None
+            self, data_type, address: int, db_num: int, data: Union[str, bool, int, float],
+            bit_index: int = 0, size=None
     ) -> int:
         """写入plc数据的通用方法.
 
