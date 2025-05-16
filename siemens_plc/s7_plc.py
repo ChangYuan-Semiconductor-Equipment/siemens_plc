@@ -193,7 +193,7 @@ class S7PLC:
         response_data = self._s7_client.db_read(db_number, start, real_size)
         if not response_data:
             raise PLCReadError("PLC: Read string data error")
-        value = util.get_string(response_data, 0)
+        value = util.get_string(response_data, 0).strip()
         if save_log:
             self.logger.info("PLC: Read string data: %s", value)
         return value
