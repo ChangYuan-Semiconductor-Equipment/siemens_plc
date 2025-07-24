@@ -18,7 +18,7 @@ class S7PLC:
     """This class provides methods for interacting with a Siemens S7 PLC using the Snap7 library."""
     LOG_FORMAT = "%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
 
-    def __init__(self, ip: str, rack: int = 0, slot: int = 1, plc_name: str = ""):
+    def __init__(self, ip: str, rack: int = 0, slot: int = 1, plc_name: str = "", save_log: bool = False):
         """Initialize the S7Plc class.
 
         Args:
@@ -29,6 +29,7 @@ class S7PLC:
         """
         logging.basicConfig(level=logging.INFO, encoding="UTF-8", format=self.LOG_FORMAT)
 
+        self.save_log = save_log
         self.ip = ip
         self.plc_name = plc_name if plc_name else ip
         self.rack = rack
@@ -42,8 +43,9 @@ class S7PLC:
 
     def _initial_log_config(self) -> None:
         """日志配置."""
-        self._create_log_dir()
-        self.logger.addHandler(self.file_handler)  # handler_passive 日志保存到统一文件
+        if self.save_log:
+            self._create_log_dir()
+            self.logger.addHandler(self.file_handler)  # handler_passive 日志保存到统一文件
 
     @staticmethod
     def _create_log_dir():
@@ -77,7 +79,7 @@ class S7PLC:
         Returns:
             str: 新生成的自定义日志文件路径.
         """
-        _, suffix, date_str = log_path.split(".")
+        _, suffix, date_str, *__ = log_path.split(".")
         new_log_path = f"{os.getcwd()}/log/plc_{self.plc_name}_{date_str}.{suffix}"
         return new_log_path
 
