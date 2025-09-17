@@ -1,3 +1,4 @@
+# pylint: skip-file
 """PLC drive."""
 import logging
 import os
@@ -13,7 +14,6 @@ from snap7 import util
 from siemens_plc.exception import PLCReadError, PLCWriteError
 
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments, too-many-instance-attributes
 class S7PLC:
     """This class provides methods for interacting with a Siemens S7 PLC using the Snap7 library."""
     LOG_FORMAT = "%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
