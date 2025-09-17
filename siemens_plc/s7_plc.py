@@ -133,6 +133,8 @@ class S7PLC:
             Union[str, bool, int]: 返回读取plc读取的数据.
         """
         address = int(address)
+        if data_type in ["str", "string"]:
+            data_type = "str"
         with self.plc_lock:
             read_func = getattr(self, f"read_{data_type}_data")
             if data_type == "bool":
@@ -275,6 +277,8 @@ class S7PLC:
         Returns:
             int: 写入后的code.
         """
+        if data_type in ["str", "string"]:
+            data_type = "str"
         address = int(address)
         with self.plc_lock:
             write_func = getattr(self, f"write_{data_type}_data")
