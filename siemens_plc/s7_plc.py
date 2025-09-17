@@ -41,7 +41,7 @@ class S7PLC:
         self._file_handler = None  # 保存日志的处理器
         self._initial_log_config()
 
-    def _initial_log_config(self) -> None:
+    def _initial_log_config(self):
         """日志配置."""
         if self.save_log:
             self._create_log_dir()
@@ -99,7 +99,7 @@ class S7PLC:
                 return False
         return True
 
-    def disconnect(self) -> None:
+    def disconnect(self):
         """Disconnect from the PLC."""
         if self.get_connect_state():
             self._s7_client.disconnect()
@@ -122,16 +122,17 @@ class S7PLC:
         """读取plc数据的通用方法.
 
         Args:
-            data_type (str): 读取数据的类型.
-            db_num (int): db num.
-            address (int): 开始地址位.
-            size (int): 地址位长度.
-            bit_index (int): bool类型对应的bool index, 默认为0.
+            data_type: 读取数据的类型.
+            db_num: db num.
+            address: 开始地址位.
+            size: 地址位长度.
+            bit_index: bool类型对应的bool index, 默认为0.
             save_log: 是否保存日志, 默认保存.
 
         Returns:
             Union[str, bool, int]: 返回读取plc读取的数据.
         """
+        address = int(address)
         with self.plc_lock:
             read_func = getattr(self, f"read_{data_type}_data")
             if data_type == "bool":
@@ -142,9 +143,9 @@ class S7PLC:
         """Read integer data from the PLC.
 
         Args:
-            db_number (int): Number of the DB to be read.
-            start (int): Byte index to start reading from.
-            size (int): Amount of bytes to be read.
+            db_number: Number of the DB to be read.
+            start: Byte index to start reading from.
+            size: Amount of bytes to be read.
             save_log: 是否保存日志, 默认保存.
 
         Returns:
@@ -165,9 +166,9 @@ class S7PLC:
         """Read real data from the PLC.
 
         Args:
-            db_number (int): Number of the DB to be read.
-            start (int): Byte index to start reading from.
-            size (int): Amount of bytes to be read.
+            db_number: Number of the DB to be read.
+            start: Byte index to start reading from.
+            size: Amount of bytes to be read.
             save_log: 是否保存日志, 默认保存.
 
         Returns:
@@ -188,9 +189,9 @@ class S7PLC:
         """Read lreal data from the PLC.
 
         Args:
-            db_number (int): Number of the DB to be read.
-            start (int): Byte index to start reading from.
-            size (int): Amount of bytes to be read.
+            db_number: Number of the DB to be read.
+            start: Byte index to start reading from.
+            size: Amount of bytes to be read.
             save_log: 是否保存日志, 默认保存.
 
         Returns:
@@ -213,10 +214,10 @@ class S7PLC:
         """Read bool data from the PLC.
 
         Args:
-            db_number (int): Number of the DB to be read.
-            start (int): Byte index to start reading from.
-            size (int): Amount of bytes to be read.
-            bool_index (int): bit index to read from.
+            db_number: Number of the DB to be read.
+            start: Byte index to start reading from.
+            size: Amount of bytes to be read.
+            bool_index: bit index to read from.
             save_log: 是否保存日志, 默认保存.
 
         Returns:
@@ -237,9 +238,9 @@ class S7PLC:
         """Read string data from the PLC.
 
         Args:
-            db_number (int): Number of the DB to be read.
-            start (int): Byte index to start reading from.
-            size (int): Amount of bytes to be read.
+            db_number: Number of the DB to be read.
+            start: Byte index to start reading from.
+            size: Amount of bytes to be read.
             save_log: 是否保存日志, 默认保存.
 
         Returns:
@@ -258,22 +259,23 @@ class S7PLC:
         return value
 
     def execute_write(
-            self, data_type, address: int, db_num: int, value: Union[str, bool, int, float],
-            bit_index: int = 0, size=None
+            self, data_type: str, address: int, db_num: int, value: Union[str, bool, int, float],
+            bit_index: int = 0, size=None, **kwargs
     ) -> int:
         """写入plc数据的通用方法.
 
         Args:
-            data_type (str): 读取数据的类型.
-            db_num (int): db num.
-            address (int): 开始地址位.
-            value (Union[str, bool, int]): 要写入的数据.
-            bit_index (int): bool类型对应的bool index.
+            data_type: 读取数据的类型.
+            db_num: db num.
+            address: 开始地址位.
+            value: 要写入的数据.
+            bit_index: bool类型对应的bool index.
             size: 写入数据的长度.
 
         Returns:
             int: 写入后的code.
         """
+        address = int(address)
         with self.plc_lock:
             write_func = getattr(self, f"write_{data_type}_data")
             if data_type == "bool":
@@ -286,9 +288,9 @@ class S7PLC:
         """Write integer data to the PLC.
 
         Args:
-            db_number (int): Number of the DB to be written.
-            start (int): Byte index to start writing to.
-            data (int): The value to be written.
+            db_number: Number of the DB to be written.
+            start: Byte index to start writing to.
+            data: The value to be written.
 
         Returns:
             int: Status of the write integer data operation.
@@ -307,9 +309,9 @@ class S7PLC:
         """Write real data to the PLC.
 
         Args:
-            db_number (int): Number of the DB to be written.
-            start (int): Byte index to start writing to.
-            data (int): The value to be written.
+            db_number: Number of the DB to be written.
+            start: Byte index to start writing to.
+            data: The value to be written.
 
         Returns:
             Optional[int]: Status of the write real data operation.
@@ -328,9 +330,9 @@ class S7PLC:
         """Write lreal data to the PLC.
 
         Args:
-            db_number (int): Number of the DB to be written.
-            start (int): Byte index to start writing to.
-            data (int): The value to be written.
+            db_number: Number of the DB to be written.
+            start: Byte index to start writing to.
+            data: The value to be written.
 
         Returns:
             Optional[int]: Status of the write lreal data operation.
@@ -349,10 +351,10 @@ class S7PLC:
         """Write bool data to the PLC.
 
         Args:
-            db_number (int): Number of the DB to be written.
-            start (int): Byte index to start writing to.
-            data (bool): The value to be written.
-            bool_index (int): bit index to read from, The range is 0-7.
+            db_number: Number of the DB to be written.
+            start: Byte index to start writing to.
+            data: The value to be written.
+            bool_index: bit index to read from, The range is 0-7.
 
         Returns:
             int: Status of the write string data operation.
