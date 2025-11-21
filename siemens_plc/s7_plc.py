@@ -164,6 +164,29 @@ class S7PLC:
             self.logger.info("读取 int 地址 %s 的值是: %s, 读取长度为 %s", start, value, size)
         return value
 
+    def read_dint_data(self, db_number: int, start: int, size: int = 4, save_log: bool = True) -> int:
+        """Read double integer data from the PLC.
+
+        Args:
+            db_number: Number of the DB to be read.
+            start: Byte index to start reading from.
+            size: Amount of bytes to be read.
+            save_log: 是否保存日志, 默认保存.
+
+        Returns:
+            int: Status of the read integer data operation.
+
+        Raises:
+            PLCReadError: If reading integer type data fails.
+        """
+        response_data = self._s7_client.db_read(db_number, start, size)
+        if not response_data:
+            raise PLCReadError("PLC: Read integer data error")
+        value = util.get_dint(response_data, 0)
+        if save_log:
+            self.logger.info("读取 int 地址 %s 的值是: %s, 读取长度为 %s", start, value, size)
+        return value
+
     def read_real_data(self, db_number: int, start: int, size: int = 4, save_log: bool = True) -> float:
         """Read real data from the PLC.
 
@@ -305,6 +328,27 @@ class S7PLC:
         try:
             int_data_bytearray = bytearray(self._s7_client.db_read(db_number, start, 2))
             int_data_bytearray = util.set_int(int_data_bytearray, 0, data)
+            return self._s7_client.db_write(db_number, start, int_data_bytearray)
+        except RuntimeError as e:
+            raise PLCWriteError("PLC: Write integer data error") from e
+
+    def write_dint_data(self, db_number: int, start: int, data: int):
+        """Write double integer data to the PLC.
+
+        Args:
+            db_number: Number of the DB to be written.
+            start: Byte index to start writing to.
+            data: The value to be written.
+
+        Returns:
+            int: Status of the write integer data operation.
+
+        Raises:
+            PLCWriteError: If writing integer type data fails.
+        """
+        try:
+            int_data_bytearray = bytearray(self._s7_client.db_read(db_number, start, 4))
+            util.set_dint(int_data_bytearray, 0, data)
             return self._s7_client.db_write(db_number, start, int_data_bytearray)
         except RuntimeError as e:
             raise PLCWriteError("PLC: Write integer data error") from e
