@@ -278,7 +278,15 @@ class S7PLC:
         response_data = self._s7_client.db_read(db_number, start, real_size)
         if not response_data:
             raise PLCReadError("PLC: Read string data error")
-        value = util.get_string(response_data, 0).strip()
+        try:
+            value = util.get_string(response_data, 0).strip()
+        except TypeError:
+            text_bytes = []
+            for byte in response_data:
+                if byte == 0:
+                    break
+                text_bytes.append(byte)
+            value = bytes(text_bytes).decode("UTF-8")
         if save_log:
             self.logger.info("读取 str 地址 %s 的值是: %s, 读取长度为 %s", start, value, size)
         return value
